@@ -17,15 +17,37 @@ class Welcome extends Trongate
 
         $data["ddd"] =  "ddd";
 
+        $data1["name"] =  "1. 기본으로 설정되는 이름";
+        $data1["message"] =  "1. 기본으로 설정되는 문구";
+
+        $data2["name"] =  "2. 기본으로 설정되는 이름";
+        $data2["message"] =  "2. 기본으로 설정되는 문구";
+
+        // ob_start();
+        // load('uis/sam', $data1);
+        // $data['content1'] = ob_get_clean();
+
+        // ob_start();
+        // load('uis/sam', $data2);
+        // $data['content2'] = ob_get_clean();
+
+
+        $data['data1'] = $data1;
+        $data['data2'] = $data2;
+
+        $this->template('public', $data);
+
         $sql = "SELECT
         e.name AS employee_name, e.position, d.name AS department_name
         FROM employee e
         JOIN department_id = d.id ";
-        $rows = $this->model->query($sql, 'object');
+        // $rows = $this->model->query($sql, 'object');
+
+
 
 
         // *** (필수) templates/views/public.php 를 바라봄
-        $this->template('public', $data);
+
     }
 
     function greeting(): void

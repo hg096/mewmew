@@ -2,11 +2,10 @@
 
 /**
  * Provides database interaction functionalities including
- * fetching, inserting, updating, and resequencing records. This class is
+ * fetching, inserting, updating, and resequencing records. This class is 
  * also used by Trongate's Module Import Wizard for executing SQL statements.
  */
-class Model
-{
+class Model {
 
     private $host = HOST;
     private $port = '';
@@ -26,10 +25,9 @@ class Model
      *
      * @param string|null $current_module (optional) The current module name. Default is null.
      */
-    public function __construct(?string $current_module = null)
-    {
+    public function __construct(?string $current_module = null) {
 
-        if (DATABASE == '') {
+        if (DATABASE === '') {
             return;
         }
 
@@ -60,8 +58,7 @@ class Model
      * @param int $offset (optional) The number of rows to skip before fetching results. Default is 0.
      * @return array Returns an array of objects representing the fetched rows.
      */
-    public function get(?string $order_by = null, ?string $target_tbl = null, ?int $limit = null, int $offset = 0): array
-    {
+    public function get(?string $order_by = null, ?string $target_tbl = null, ?int $limit = null, int $offset = 0): array {
         // Set default order_by if not provided
         $order_by = $order_by ?? 'id';
 
@@ -81,7 +78,7 @@ class Model
         }
 
         // Debugging: show query if debug mode is enabled
-        if ($this->debug == true) {
+        if ($this->debug === true) {
             $data = [];
             $query_to_execute = $this->show_query($sql, $data, $this->query_caveat);
         }
@@ -109,8 +106,7 @@ class Model
      * @throws InvalidArgumentException If an invalid operator is provided.
      * @throws RuntimeException If the query execution fails.
      */
-    public function get_where_custom(string $column, $value, string $operator = '=', string $order_by = 'id', ?string $target_table = null, ?int $limit = null, ?int $offset = null): array
-    {
+    public function get_where_custom(string $column, $value, string $operator = '=', string $order_by = 'id', ?string $target_table = null, ?int $limit = null, ?int $offset = null): array {
         if (!isset($target_table)) {
             $target_table = $this->get_table_from_url();
         }
@@ -163,8 +159,7 @@ class Model
      * @return object|false Returns an object representing the fetched record, or false if no record is found.
      * @throws RuntimeException If the query execution fails.
      */
-    public function get_where(int $id, ?string $target_table = null): object|false
-    {
+    public function get_where(int $id, ?string $target_table = null): object|false {
         $data['id'] = $id;
 
         if (!isset($target_table)) {
@@ -196,8 +191,7 @@ class Model
      * @return object|false Returns an object representing the fetched record, or false if no record is found.
      * @throws RuntimeException If the query execution fails.
      */
-    public function get_one_where(string $column, $value, ?string $target_table = null): object|false
-    {
+    public function get_one_where(string $column, $value, ?string $target_table = null): object|false {
         $data[$column] = $value;
 
         if (!isset($target_table)) {
@@ -229,8 +223,7 @@ class Model
      * @return array Returns an array of objects representing the fetched rows. If no records are found, an empty array is returned.
      * @throws RuntimeException If the query execution fails.
      */
-    public function get_many_where(string $column, $value, ?string $target_table = null): array
-    {
+    public function get_many_where(string $column, $value, ?string $target_table = null): array {
         if (!isset($target_table)) {
             $target_table = $this->get_table_from_url();
         }
@@ -264,8 +257,7 @@ class Model
      * @return array Returns an array of objects or arrays representing the fetched rows.
      * @throws InvalidArgumentException If the values array is empty.
      */
-    public function get_where_in(string $column, array $values, ?string $target_table = null, string $return_type = 'object'): array
-    {
+    public function get_where_in(string $column, array $values, ?string $target_table = null, string $return_type = 'object'): array {
         if (empty($values)) {
             throw new InvalidArgumentException('The values array must not be empty.');
         }
@@ -281,7 +273,7 @@ class Model
         $sql = "SELECT * FROM $target_table WHERE $column IN ($values_str)";
 
         // Debugging: show query if debug mode is enabled
-        if ($this->debug == true) {
+        if ($this->debug === true) {
             $data = [];
             $this->show_query($sql, $data, $this->query_caveat);
         }
@@ -306,8 +298,7 @@ class Model
      * @return int The number of rows in the specified table.
      * @throws RuntimeException If the query execution fails.
      */
-    public function count(?string $target_tbl = null): int
-    {
+    public function count(?string $target_tbl = null): int {
         if (!isset($target_tbl)) {
             $target_tbl = $this->get_table_from_url();
         }
@@ -347,8 +338,7 @@ class Model
      * @throws InvalidArgumentException If an invalid operator is provided.
      * @throws RuntimeException If the query execution fails.
      */
-    public function count_where(string $column, $value, string $operator = '=', ?string $target_tbl = null): int
-    {
+    public function count_where(string $column, $value, string $operator = '=', ?string $target_tbl = null): int {
         if (!isset($target_tbl)) {
             $target_tbl = $this->get_table_from_url();
         }
@@ -366,7 +356,7 @@ class Model
 
         // Build the SQL query
         $sql = "SELECT COUNT(*) AS total_rows FROM $target_tbl WHERE $column $operator :$column";
-
+        
         // Debugging
         if ($this->debug) {
             $this->show_query($sql, [$column => $value], $this->query_caveat);
@@ -393,8 +383,7 @@ class Model
      * @return int The number of rows matching the condition.
      * @throws RuntimeException If the query execution fails.
      */
-    public function count_rows(string $column, $value, ?string $target_table = null): int
-    {
+    public function count_rows(string $column, $value, ?string $target_table = null): int {
         if (!isset($target_table)) {
             $target_table = $this->get_table_from_url();
         }
@@ -426,8 +415,7 @@ class Model
      * @param string|null $target_table (optional) The name of the database table to query. Default is null.
      * @return int|null Returns the maximum 'id' value from the table. Returns 0 if the table is empty or null if no table is specified.
      */
-    public function get_max(?string $target_table = null): ?int
-    {
+    public function get_max(?string $target_table = null): ?int {
         if (!isset($target_table)) {
             $target_table = $this->get_table_from_url();
         }
@@ -455,8 +443,7 @@ class Model
      * @return int|null The ID (int) of the newly inserted record, or null if insertion fails.
      * @throws RuntimeException If the query execution fails.
      */
-    public function insert(array $data, ?string $target_table = null): ?int
-    {
+    public function insert(array $data, ?string $target_table = null): ?int {
         if (!isset($target_table)) {
             $target_table = $this->get_table_from_url();
         }
@@ -486,8 +473,7 @@ class Model
      * @return bool True if the update was successful, false otherwise.
      * @throws RuntimeException If the query execution fails.
      */
-    public function update(int $update_id, array $data, ?string $target_table = null): bool
-    {
+    public function update(int $update_id, array $data, ?string $target_table = null): bool {
         if (!isset($target_table)) {
             $target_table = $this->get_table_from_url();
         }
@@ -522,8 +508,7 @@ class Model
      * @return bool Indicates whether the update operation was successful.
      * @throws RuntimeException If the query execution fails.
      */
-    public function update_where(string $column, $column_value, array $data, ?string $target_tbl = null): bool
-    {
+    public function update_where(string $column, $column_value, array $data, ?string $target_tbl = null): bool {
         if (!isset($target_tbl)) {
             $target_tbl = $this->get_table_from_url();
         }
@@ -556,15 +541,14 @@ class Model
      * @return bool Indicates whether the delete operation was successful.
      * @throws RuntimeException If the query execution fails.
      */
-    public function delete(int $id, ?string $target_tbl = null): bool
-    {
+    public function delete(int $id, ?string $target_tbl = null): bool {
         if (!isset($target_tbl)) {
             $target_tbl = $this->get_table_from_url();
         }
 
         // Construct the SQL query
         $sql = "DELETE FROM `$target_tbl` WHERE id = :id";
-
+        
         // Prepare data for execution
         $data = ['id' => $id];
 
@@ -587,19 +571,18 @@ class Model
      * @throws InvalidArgumentException If the SQL query is potentially vulnerable to SQL injection.
      * @note It's important to ensure that the provided SQL query is properly sanitized to prevent SQL injection attacks.
      */
-    public function query(string $sql, ?string $return_type = null): mixed
-    {
+    public function query(string $sql, ?string $return_type = null): mixed {
 
         $data = [];
 
-        if ($this->debug == true) {
+        if ($this->debug === true) {
             $query_to_execute = $this->show_query($sql, $data);
         }
 
         $this->prepare_and_execute($sql, $data);
 
-        if (($return_type == 'object') || ($return_type == 'array')) {
-            if ($return_type == 'object') {
+        if (($return_type === 'object') || ($return_type === 'array')) {
+            if ($return_type === 'object') {
                 $query = $this->stmt->fetchAll(PDO::FETCH_OBJ);
             } else {
                 $query = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -621,8 +604,7 @@ class Model
      * @return array|object|null Returns the result of the query based on the specified return type.
      * @throws RuntimeException If the query execution fails.
      */
-    public function query_bind(string $sql, array $data, ?string $return_type = null): mixed
-    {
+    public function query_bind(string $sql, array $data, ?string $return_type = null): mixed {
         if ($this->debug) {
             $this->show_query($sql, $data, $this->query_caveat);
         }
@@ -644,8 +626,7 @@ class Model
      * @param string $table_name The name of the table to check.
      * @return bool Returns true if the table exists, false otherwise.
      */
-    public function table_exists(string $table_name): bool
-    {
+    public function table_exists(string $table_name): bool {
         try {
             // Construct the SQL query to check for the table's existence
             $sql = "SHOW TABLES LIKE :table_name";
@@ -677,8 +658,7 @@ class Model
      *
      * @return array Returns an array of table names.
      */
-    public function get_all_tables(): array
-    {
+    public function get_all_tables(): array {
         try {
             // Construct the SQL query to retrieve all table names
             $sql = "SHOW TABLES";
@@ -709,8 +689,7 @@ class Model
      * @param bool $column_names_only (optional) Whether to return only column names. Default is false.
      * @return array|false Returns an array of column details or an array of column names if $column_names_only is true. Returns false on failure.
      */
-    public function describe_table(string $table, bool $column_names_only = false): array|false
-    {
+    public function describe_table(string $table, bool $column_names_only = false): array|false {
         try {
             $sql = 'DESCRIBE ' . $table;
             $columns = $this->query($sql, 'array');
@@ -746,16 +725,15 @@ class Model
      *       before applying it to a production system. Additionally, make sure to take
      *       proper backups of your data before executing this operation.
      */
-    public function resequence_ids(string $table_name): bool
-    {
+    public function resequence_ids(string $table_name): bool {
 
         $num_rows = $this->count($table_name);
         if ($num_rows === 0) {
-            $sql = 'ALTER TABLE ' . $table_name . ' AUTO_INCREMENT = 1';
+            $sql = 'ALTER TABLE '.$table_name.' AUTO_INCREMENT = 1';
             $this->query($sql);
             return true;
         }
-
+        
         try {
             // Begin transaction
             $this->dbh->beginTransaction();
@@ -795,8 +773,8 @@ class Model
 
             // Commit transaction
             $this->dbh->commit();
-
-            $sql = 'ALTER TABLE ' . $table_name . ' AUTO_INCREMENT = 1';
+            
+            $sql = 'ALTER TABLE '.$table_name.' AUTO_INCREMENT = 1';
             $this->query($sql);
 
             // Return true upon successful resequencing
@@ -819,11 +797,10 @@ class Model
      * @param array $records An array containing associative arrays representing records to be inserted.
      * @return int The number of records successfully inserted.
      * @throws PDOException If an error occurs during the database operation.
-     *
+     * 
      * @note This method should only be used in controlled environments and not exposed to untrusted users.
      */
-    public function insert_batch(string $table, array $records): int
-    {
+    public function insert_batch(string $table, array $records): int {
         try {
             // Retrieve field names from the first record
             $fields = array_keys($records[0]);
@@ -865,8 +842,7 @@ class Model
      *
      * @note This method should only be used for development purposes and may produce undesired consequences if used improperly. It is disabled in production environments.
      */
-    public function exec(string $sql): void
-    {
+    public function exec(string $sql): void {
         if (ENV === 'dev') {
             try {
                 $this->query($sql);
@@ -887,8 +863,7 @@ class Model
      * @param string|null $caveat (optional) Additional information or note about the query. Default is null.
      * @return void
      */
-    private function show_query(string $query, array $data, ?string $caveat = null): void
-    {
+    private function show_query(string $query, array $data, ?string $caveat = null): void {
         $keys = array();
         $values = $data;
         $named_params = true;
@@ -915,7 +890,7 @@ class Model
             }
         }
 
-        if ($named_params == true) {
+        if ($named_params === true) {
             $query = preg_replace($keys, $values, $query);
         } else {
             $query .= ' ';
@@ -938,21 +913,21 @@ class Model
 
         echo '<div class="tg-rprt"><b>QUERY TO BE EXECUTED:</b><br><br>  -> ';
         echo $query . $caveat_info . '</div>';
-?>
+    ?>
 
-        <style>
-            .tg-rprt {
-                color: #383623;
-                background-color: #efe79e;
-                font-family: "Lucida Console", Monaco, monospace;
-                padding: 1em;
-                border: 1px #383623 solid;
-                clear: both !important;
-                margin: 1em 0;
-            }
-        </style>
+    <style>
+        .tg-rprt {
+            color: #383623;
+            background-color: #efe79e;
+            font-family: "Lucida Console", Monaco, monospace;
+            padding: 1em;
+            border: 1px #383623 solid;
+            clear: both !important;
+            margin: 1em 0;
+        }
+    </style>
 
-<?php
+    <?php
     }
 
     /**
@@ -961,8 +936,7 @@ class Model
      * @param mixed $value The value for which to determine the parameter type.
      * @return int The PDO parameter type.
      */
-    private function get_param_type(mixed $value): int
-    {
+    private function get_param_type(mixed $value): int {
         switch (true) {
             case is_int($value):
                 $type = PDO::PARAM_INT;
@@ -987,8 +961,7 @@ class Model
      * @param array $data (optional) The data to bind to the SQL statement. Default is an empty array.
      * @return bool True on success, false on failure.
      */
-    private function prepare_and_execute(string $sql, array $data = []): bool
-    {
+    private function prepare_and_execute(string $sql, array $data = []): bool {
         $this->stmt = $this->dbh->prepare($sql);
 
         if (isset($data[0])) { //unnamed data
@@ -1008,8 +981,7 @@ class Model
      *
      * @return string The table name retrieved from the URL segment or the current module.
      */
-    private function get_table_from_url(): string
-    {
+    private function get_table_from_url(): string {
         return isset($this->current_module) ? $this->current_module : segment(1);
     }
 
@@ -1021,8 +993,7 @@ class Model
      * @param int|null $offset (optional) The number of rows to skip before fetching results. Default is null.
      * @return string The SQL statement with LIMIT and OFFSET clauses added if provided.
      */
-    private function add_limit_offset(string $sql, ?int $limit, ?int $offset): string
-    {
+    private function add_limit_offset(string $sql, ?int $limit, ?int $offset): string {
         if ((is_numeric($limit)) && (is_numeric($offset))) {
             $limit_results = true;
             $sql .= " LIMIT $offset, $limit";
@@ -1030,6 +1001,5 @@ class Model
 
         return $sql;
     }
-
 
 }

@@ -16,7 +16,7 @@ class Trongate {
 
     /**
      * Constructor for Trongate class.
-     *
+     * 
      * @param string|null $module_name The name of the module to use, or null for default module.
      */
     public function __construct(?string $module_name = null) {
@@ -105,9 +105,6 @@ class Trongate {
     protected function view(string $view, array $data = [], ?bool $return_as_str = null): ?string {
         $return_as_str = $return_as_str ?? false;
 
-        echo ">>>> view : ".$this;
-        exit();
-
         if (isset($data['view_module'])) {
             $module_name = $data['view_module'];
         } else {
@@ -159,7 +156,7 @@ class Trongate {
         } catch (Exception $e) {
             // Attempt to derive module name from URL segment
             $segment_one = segment(1);
-            if (strpos($segment_one, '-') !== false && substr_count($segment_one, '-') == 1) {
+            if (strpos($segment_one, '-') !== false && substr_count($segment_one, '-') === 1) {
                 $module_name_from_segment = str_replace('-', '/', $segment_one);
                 $view_path_from_segment = APPPATH . "modules/$module_name_from_segment/views/$view.php";
                 if (file_exists($view_path_from_segment)) {
